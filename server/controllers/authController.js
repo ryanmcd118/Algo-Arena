@@ -41,8 +41,7 @@ authController.login = (req, res, next) => {
   const query = `
     SELECT _id, username, password
     FROM users
-    WHERE username = $1
-    RETURNING username`;
+    WHERE username = $1`;
 
   db.query(query, [username])
     .then((response) => {
