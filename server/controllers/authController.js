@@ -41,7 +41,8 @@ authController.login = (req, res, next) => {
   const query = `
     SELECT username, password
     FROM users
-    WHERE username = $1`;
+    WHERE username = $1
+    RETURNING username`;
 
   db.query(query, [username])
     .then((response) => {
@@ -55,8 +56,11 @@ authController.login = (req, res, next) => {
         }
 
         if (!result) return res.status(401).json('Incorrect password.');
-        if (result) return next();
-        return next();
+        if (result) {
+          res.locals.user = response.rows[0].username;
+          return next();
+        }
+        // return next();
       });
     })
     .catch((err) => {
